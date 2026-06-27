@@ -86,12 +86,17 @@ test.describe('Coffee Cart', () => {
     await expect(cartNavigation).toContainText('cart (5)');
   });
 
-  test('Empty cart shows no items on a fresh session', async () => {
-    test.skip(
-      true,
-      'TODO: navigate straight to /coffee/cart without adding anything, assert ' +
-        'item list locator.toHaveCount(0) (or the list container is hidden)',
-    );
+  test('Empty cart shows no items on a fresh session', async ({ page }) => {
+      /*'TODO: navigate straight to /coffee/cart without adding anything, assert ' +
+        'item list locator.toHaveCount(0) (or the list container is hidden)',*/
+    const cartNavigation = page.locator("a[aria-label='Cart page']");
+    const cartItems = page.locator("//ul/li[@class='list-header']/following-sibling::li");
+
+    await cartNavigation.click();
+
+    await expect(cartItems).toHaveCount(0);
+    await expect(page.getByText("No coffee, go add some.")).toBeVisible();
+
   });
 
   test('Payment modal shows Name, Email and Submit', async () => {
