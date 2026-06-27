@@ -1,4 +1,4 @@
-import { test } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 // App under test: Coffee Cart — https://seleniumbase.io/coffee/
 // Routes: menu — /coffee/, cart — /coffee/cart
@@ -13,19 +13,37 @@ test.describe('Coffee Cart', () => {
     await page.goto('/coffee/');
   });
 
-  test('Smoke: menu loads with drinks list and Total button @smoke', async () => {
-    test.skip(
-      true,
-      'TODO: verify the cup list is visible and the Total/checkout button is visible',
-    );
+  test('Smoke: menu loads with drinks list and Total button @smoke', async ({ page }) => {
+    const drinks = [
+      'Espresso',
+      'Espresso_Macchiato',
+      'Cappuccino',
+      'Mocha',
+      'Flat_White',
+      'Americano',
+      'Cafe_Latte',
+      'Espresso_Con Panna',
+      'Cafe_Breve',
+    ];
+    const totalButton = page.locator('button[data-test=checkout]');
+
+    for (const drink of drinks) {
+      await expect.soft(page.locator(`[data-test="${drink}"]`)).toBeVisible();
+    }
+    await expect(totalButton).toBeVisible();
   });
 
-  test('Adding two different drinks updates the header cart counter and Total', async () => {
-    test.skip(
-      true,
-      'TODO: click two different cups (e.g. by aria-label/data-test), then assert ' +
-        'header "cart (2)" text and that Total equals the sum of the two drink prices',
-    );
+  test('Adding two different drinks updates the header cart counter and Total', async ({ page }) => {
+    const espressoButton = page.locator("[data-test='Espresso']");
+    const flatWhiteButton = page.locator("[data-test='Flat_White']");
+    const totalButton = page.locator('button[data-test=checkout]');
+    const cartNavigation = page.locator("a[aria-label='Cart page']");
+
+    await espressoButton.click();
+    await flatWhiteButton.click();
+
+    await expect(totalButton).toHaveText('Total: $28.00');
+    await expect(cartNavigation).toContainText('cart (2)');
   });
 
   test('Cart page lists exactly the added items', async () => {
