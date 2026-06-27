@@ -46,11 +46,20 @@ test.describe('Coffee Cart', () => {
     await expect(cartNavigation).toContainText('cart (2)');
   });
 
-  test('Cart page lists exactly the added items', async () => {
-    test.skip(
-      true,
-      'TODO: add 2 drinks, navigate to /coffee/cart, assert item rows ' + 'locator.toHaveCount(2)',
-    );
+  test('Cart page lists exactly the added items', async ({ page }) => {
+      /*'TODO: add 2 drinks, navigate to /coffee/cart, assert item rows ' + 'locator.toHaveCount(2)'*/
+    const cappuccinoButton = page.locator("[data-test='Cappuccino']");
+    const mochaButton = page.locator("[data-test='Mocha']");
+    const cartNavigation = page.locator("a[aria-label='Cart page']");
+    const cartItems = page.locator("//ul/li[@class='list-header']/following-sibling::li");
+
+    await cappuccinoButton.click();
+    await mochaButton.click();
+    await cartNavigation.click();
+
+    await expect(cartItems).toHaveCount(2);
+    await expect(cartItems.nth(0)).toContainText('Cappuccino');
+    await expect(cartItems.nth(1)).toContainText('Mocha');
   });
 
   test('Increasing item quantity on the cart page updates counter and Total', async () => {
