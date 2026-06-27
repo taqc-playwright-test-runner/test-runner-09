@@ -62,12 +62,28 @@ test.describe('Coffee Cart', () => {
     await expect(cartItems.nth(1)).toContainText('Mocha');
   });
 
-  test('Increasing item quantity on the cart page updates counter and Total', async () => {
-    test.skip(
-      true,
-      'TODO: on /coffee/cart, click the "+" control for one item, then assert ' +
+  test('Increasing item quantity on the cart page updates counter and Total', async ({ page }) => {
+/*      'TODO: on /coffee/cart, click the "+" control for one item, then assert ' +
         'header cart counter and Total reflect the new quantity/sum',
-    );
+*/
+    const flatWhiteButton = page.locator("[data-test='Flat_White']");
+    const cappuccinoButton = page.locator("[data-test='Cappuccino']");
+    const latteButton = page.locator("[data-test='Cafe_Latte']");
+    const promoDialogYesButton = page.getByRole('button', { name: 'Yes, of course!' });
+    const discountedMochaItem = page.getByRole('listitem').filter({ hasText: '(Discounted) Mocha' });
+    const addDiscountedMochaButton = discountedMochaItem.locator("[aria-label='Add one (Discounted) Mocha']");
+    const totalButton = page.locator('button[data-test=checkout]');
+    const cartNavigation = page.locator("a[aria-label='Cart page']");
+
+    await flatWhiteButton.click();
+    await cappuccinoButton.click();
+    await latteButton.click();
+    await promoDialogYesButton.click();
+    await cartNavigation.click();
+    await addDiscountedMochaButton.click();
+
+    await expect(totalButton).toHaveText('Total: $61.00');
+    await expect(cartNavigation).toContainText('cart (5)');
   });
 
   test('Empty cart shows no items on a fresh session', async () => {
