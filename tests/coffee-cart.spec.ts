@@ -47,7 +47,6 @@ test.describe('Coffee Cart', () => {
   });
 
   test('Cart page lists exactly the added items', async ({ page }) => {
-      /*'TODO: add 2 drinks, navigate to /coffee/cart, assert item rows ' + 'locator.toHaveCount(2)'*/
     const cappuccinoButton = page.locator("[data-test='Cappuccino']");
     const mochaButton = page.locator("[data-test='Mocha']");
     const cartNavigation = page.locator("a[aria-label='Cart page']");
@@ -63,9 +62,6 @@ test.describe('Coffee Cart', () => {
   });
 
   test('Increasing item quantity on the cart page updates counter and Total', async ({ page }) => {
-/*      'TODO: on /coffee/cart, click the "+" control for one item, then assert ' +
-        'header cart counter and Total reflect the new quantity/sum',
-*/
     const flatWhiteButton = page.locator("[data-test='Flat_White']");
     const cappuccinoButton = page.locator("[data-test='Cappuccino']");
     const latteButton = page.locator("[data-test='Cafe_Latte']");
@@ -87,8 +83,6 @@ test.describe('Coffee Cart', () => {
   });
 
   test('Empty cart shows no items on a fresh session', async ({ page }) => {
-      /*'TODO: navigate straight to /coffee/cart without adding anything, assert ' +
-        'item list locator.toHaveCount(0) (or the list container is hidden)',*/
     const cartNavigation = page.locator("a[aria-label='Cart page']");
     const cartItems = page.locator("//ul/li[@class='list-header']/following-sibling::li");
 
@@ -99,12 +93,23 @@ test.describe('Coffee Cart', () => {
 
   });
 
-  test('Payment modal shows Name, Email and Submit', async () => {
-    test.skip(
-      true,
-      'TODO: click the Total/Pay button, assert the payment modal is visible, ' +
-        'then use expect.soft for the Name field, Email field and Submit button',
-    );
+  test('Payment modal shows Name, Email and Submit', async ({ page }) => {
+    const espressoButton = page.locator("[data-test='Espresso']");
+    const totalButton = page.locator('button[data-test=checkout]');
+    const paymentModal = {
+      title: page.getByRole('heading', { name: 'Payment details' }),
+      nameField: page.locator('#name'),
+      emailField: page.locator('#email'),
+      submitButton: page.locator('button#submit-payment')
+    };
+
+    await espressoButton.click();
+    await totalButton.click();
+
+    await expect(paymentModal.title).toBeVisible();
+    await expect.soft(paymentModal.nameField).toBeVisible();
+    await expect.soft(paymentModal.emailField).toBeVisible();
+    await expect.soft(paymentModal.submitButton).toBeVisible();      
   });
 
   test.describe('Optional', () => {
