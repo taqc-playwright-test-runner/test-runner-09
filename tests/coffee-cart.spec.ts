@@ -114,9 +114,6 @@ test.describe('Coffee Cart', () => {
 
   test.describe('Optional', () => {
     test('Promo dialog after a 3rd drink is dismissed with No', async ({ page }) => {
-/*
-        'TODO (bonus): add 3 drinks so the promo dialog appears, click "No", ' +
-          'then assert the scenario completes (e.g. cart still has 3 items)', */
       const flatWhiteButton = page.locator("[data-test='Flat_White']");
       const cappuccinoButton = page.locator("[data-test='Cappuccino']");
       const latteButton = page.locator("[data-test='Cafe_Latte']");
@@ -133,12 +130,23 @@ test.describe('Coffee Cart', () => {
       await expect(cartNavigation).toContainText('cart (3)');
     });
 
-    test('Completed payment form shows a success message', async () => {
-      test.skip(
-        true,
-        'TODO (bonus): open the payment modal, fill Name and Email, click Submit, ' +
-          'assert a success message/state appears',
-      );
+    test('Completed payment form shows a success message', async ({ page }) => {
+        /*'TODO (bonus): open the payment modal, fill Name and Email, click Submit, ' +
+          'assert a success message/state appears', */
+      const totalButton = page.locator('button[data-test=checkout]');
+      const paymentModal = {
+        title: page.getByRole('heading', { name: 'Payment details' }),
+        nameField: page.locator('#name'),
+        emailField: page.locator('#email'),
+        submitButton: page.locator('button#submit-payment'),
+      };
+
+      await totalButton.click();
+      await paymentModal.nameField.fill('John Doe');
+      await paymentModal.emailField.fill('john.doe@example.com');
+      await paymentModal.submitButton.click();
+      
+      await expect(page.getByText('Thanks for your purchase. Please check your email for payment.')).toBeVisible();
     });
 
     test('Skipped on a specific browser with a documented reason', async ({ browserName }) => {
