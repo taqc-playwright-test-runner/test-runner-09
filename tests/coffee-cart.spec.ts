@@ -113,12 +113,24 @@ test.describe('Coffee Cart', () => {
   });
 
   test.describe('Optional', () => {
-    test('Promo dialog after a 3rd drink is dismissed with No', async () => {
-      test.skip(
-        true,
+    test('Promo dialog after a 3rd drink is dismissed with No', async ({ page }) => {
+/*
         'TODO (bonus): add 3 drinks so the promo dialog appears, click "No", ' +
-          'then assert the scenario completes (e.g. cart still has 3 items)',
-      );
+          'then assert the scenario completes (e.g. cart still has 3 items)', */
+      const flatWhiteButton = page.locator("[data-test='Flat_White']");
+      const cappuccinoButton = page.locator("[data-test='Cappuccino']");
+      const latteButton = page.locator("[data-test='Cafe_Latte']");
+      const promoDialogNoButton = page.getByRole('button', { name: "Nah, I'll skip." });
+      const totalButton = page.locator('button[data-test=checkout]');
+      const cartNavigation = page.locator("a[aria-label='Cart page']");
+
+      await flatWhiteButton.click();
+      await cappuccinoButton.click();
+      await latteButton.click();
+      await promoDialogNoButton.click();
+      
+      await expect(totalButton).toHaveText('Total: $53.00');
+      await expect(cartNavigation).toContainText('cart (3)');
     });
 
     test('Completed payment form shows a success message', async () => {
