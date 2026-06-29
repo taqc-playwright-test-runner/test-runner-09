@@ -131,8 +131,6 @@ test.describe('Coffee Cart', () => {
     });
 
     test('Completed payment form shows a success message', async ({ page }) => {
-        /*'TODO (bonus): open the payment modal, fill Name and Email, click Submit, ' +
-          'assert a success message/state appears', */
       const totalButton = page.locator('button[data-test=checkout]');
       const paymentModal = {
         title: page.getByRole('heading', { name: 'Payment details' }),
@@ -149,12 +147,14 @@ test.describe('Coffee Cart', () => {
       await expect(page.getByText('Thanks for your purchase. Please check your email for payment.')).toBeVisible();
     });
 
-    test('Skipped on a specific browser with a documented reason', async ({ browserName }) => {
+    test('Skipped on a specific browser with a documented reason', async ({ page, browserName }) => {
       test.skip(
         browserName === 'webkit',
         'webkit project is disabled in playwright.config.ts for this assignment',
       );
-      test.skip(true, 'TODO (bonus): implement the real assertions for this scenario');
+      const totalButton = page.locator('button[data-test=checkout]');
+
+      await expect(totalButton).toHaveText('Total: $0.00');
     });
 
     test('Annotated with a tracking issue', async () => {
