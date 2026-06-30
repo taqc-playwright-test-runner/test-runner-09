@@ -157,10 +157,13 @@ test.describe('Coffee Cart', () => {
       await expect(totalButton).toHaveText('Total: $0.00');
     });
 
-    test('Annotated with a tracking issue', async () => {
+    test('Annotated with a tracking issue', async ({ page }) => {
       const issueUrl = 'https://example.com/issues/123';
       test.info().annotations.push({ type: 'issue', description: issueUrl });
-      test.skip(true, 'TODO (bonus): implement the real assertions for this scenario');
+      
+      const totalButton = page.locator('button[data-test=checkout]');
+
+      await expect(totalButton).toBeVisible();
     });
   });
 });
